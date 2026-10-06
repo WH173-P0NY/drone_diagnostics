@@ -6,7 +6,7 @@ Build a reliable tool for diagnosing an individual ArduPilot/MAVLink UAV and, la
 
 ## Current MVP status
 
-The repository is at an early scaffold stage. `mavlink.connection.connect()` opens a pymavlink connection and waits for a heartbeat, but currently uses an unbounded wait and does not expose connection configuration or structured errors. `mavlink.parameters` implements single-parameter reads and parameter-list reads with timeouts; list completion is inferred from a quiet timeout, and parameter reads are not matched against a request sequence. The CLI connects to `/dev/ttyACM0`, downloads parameters, and writes a sorted JSON dictionary to `params_snapshot.json`.
+The repository is at an early scaffold stage. `mavlink.connection.connect()` has configurable serial settings, a bounded heartbeat wait, and structured connection errors. `mavlink.parameters` matches single-parameter responses and downloads indexed parameter lists with an overall deadline. The CLI connects to `/dev/ttyACM0`, downloads parameters, and writes a sorted JSON dictionary to `params_snapshot.json`.
 
 Configuration, diagnostics, fleet, and storage modules currently contain no implementation. The `tests/` files are empty, and pytest currently collects no tests. Tasks below describe missing capabilities or explicit hardening of the partial MVP; they do not treat the existing parameter reads and JSON export as unstarted features.
 
@@ -40,6 +40,7 @@ Goal: make local connection and parameter operations configurable, bounded, test
 ### Harden parameter reads and complete parameter-list downloads
 
 **Priority:** P0  
+**Status:** Implemented
 **Description:** Keep the existing `get_param()` and `get_all_params()` APIs while making response matching, timeout behavior, and list completion explicit and reliable.
 
 **Acceptance criteria**
